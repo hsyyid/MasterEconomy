@@ -3,6 +3,7 @@ package io.github.hsyyid.mastereconomy.listeners;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.text.Texts;
 
 import io.github.hsyyid.mastereconomy.MasterEconomy;
 import io.github.hsyyid.mastereconomy.config.ConfigManager;
@@ -18,7 +19,7 @@ public class PlayerJoinListener
 			
 			if(!ConfigManager.doesPlayerHaveAccount(player.getUniqueId(), MasterEconomy.getMasterEconomy().getCurrency()))
 			{
-				ConfigManager.addUserAccount(player.getUniqueId());
+				ConfigManager.addUserAccount(player.getUniqueId(), Texts.of(player.getName()));
 			}
 		}
 	}

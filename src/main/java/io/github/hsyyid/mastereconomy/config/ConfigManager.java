@@ -158,6 +158,26 @@ public class ConfigManager
 
 		return uniqueAccount;
 	}
+	
+	public static UniqueAccount addUserAccount(UUID playerUuid, Text displayName)
+	{
+		ConfigurationLoader<CommentedConfigurationNode> configManager = MasterEconomy.getConfigManager();
+		MasterEconomy.config.getNode("mastereconomy", "accounts", "users", playerUuid.toString(), MasterEconomy.getMasterEconomy().getCurrency().getDisplayName().toText().toString(), "balance").setValue(0);
+		UniqueAccount uniqueAccount = new MasterEconomyUniqueAccount(playerUuid, displayName);
+		MasterEconomy.accounts.add(uniqueAccount);
+
+		try
+		{
+			configManager.save(MasterEconomy.config);
+			configManager.load();
+		}
+		catch (IOException e)
+		{
+			System.out.println("An error occurred while saving the config.");
+		}
+
+		return uniqueAccount;
+	}
 
 	public static Optional<UniqueAccount> getUserAccount(UUID playerUuid)
 	{
