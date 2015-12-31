@@ -76,7 +76,7 @@ public class MasterEconomyUniqueAccount implements UniqueAccount
 	public TransactionResult resetBalance(Currency currency, Cause cause, Set<Context> contexts)
 	{
 		// TODO Auto-generated method stub
-		ConfigManager.setBalance(this.getUUID(), 0);
+		ConfigManager.setBalance(this.getUUID(), BigDecimal.valueOf(0));
 		return null;
 	}
 
