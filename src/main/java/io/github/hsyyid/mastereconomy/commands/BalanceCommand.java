@@ -11,6 +11,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
+import io.github.hsyyid.mastereconomy.MasterEconomy;
 import io.github.hsyyid.mastereconomy.config.ConfigManager;
 
 public class BalanceCommand implements CommandExecutor
@@ -24,7 +25,7 @@ public class BalanceCommand implements CommandExecutor
 			Player player = target.get();
 			src.sendMessage(Texts.builder()
 				.append(Texts.of(TextColors.GOLD, "Balance: ", TextColors.GRAY))
-				.append(ConfigManager.getBalanceText(player.getUniqueId()))
+				.append(ConfigManager.getBalanceText(ConfigManager.getUserAccount(player.getUniqueId()).get(), MasterEconomy.getMasterEconomy().getCurrency()))
 				.build());
 		}
 		else
@@ -35,7 +36,7 @@ public class BalanceCommand implements CommandExecutor
 
 				src.sendMessage(Texts.builder()
 					.append(Texts.of(TextColors.GOLD, "Balance: ", TextColors.GRAY))
-					.append(ConfigManager.getBalanceText(player.getUniqueId()))
+					.append(ConfigManager.getBalanceText(ConfigManager.getUserAccount(player.getUniqueId()).get(), MasterEconomy.getMasterEconomy().getCurrency()))
 					.build());
 			}
 			else

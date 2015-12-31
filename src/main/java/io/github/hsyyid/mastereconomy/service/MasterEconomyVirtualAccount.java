@@ -3,13 +3,12 @@ package io.github.hsyyid.mastereconomy.service;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.service.context.Context;
 import org.spongepowered.api.service.economy.Currency;
 import org.spongepowered.api.service.economy.account.Account;
-import org.spongepowered.api.service.economy.account.UniqueAccount;
+import org.spongepowered.api.service.economy.account.VirtualAccount;
 import org.spongepowered.api.service.economy.transaction.ResultType;
 import org.spongepowered.api.service.economy.transaction.TransactionResult;
 import org.spongepowered.api.service.economy.transaction.TransactionType;
@@ -20,20 +19,20 @@ import org.spongepowered.api.text.Text;
 import io.github.hsyyid.mastereconomy.MasterEconomy;
 import io.github.hsyyid.mastereconomy.config.ConfigManager;
 
-public class MasterEconomyUniqueAccount implements UniqueAccount
+public class MasterEconomyVirtualAccount implements VirtualAccount
 {
 	private Text displayName;
-	private UUID uuid;
-
-	public MasterEconomyUniqueAccount(UUID uuid)
+	private String identifier;
+	
+	public MasterEconomyVirtualAccount(String identifier)
 	{
-		this.uuid = uuid;
+		this.identifier = identifier;
 	}
 
 	@Override
 	public Text getDisplayName()
 	{
-		//TODO: Auto-generated method stub
+		// TODO Auto-generated method stub
 		return this.displayName;
 	}
 
@@ -124,7 +123,7 @@ public class MasterEconomyUniqueAccount implements UniqueAccount
 	@Override
 	public String getIdentifier()
 	{
-		return this.getUUID().toString();
+		return this.identifier;
 	}
 
 	@Override
@@ -132,11 +131,5 @@ public class MasterEconomyUniqueAccount implements UniqueAccount
 	{
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public UUID getUUID()
-	{
-		return this.uuid;
 	}
 }

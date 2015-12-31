@@ -4,6 +4,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 
+import io.github.hsyyid.mastereconomy.MasterEconomy;
 import io.github.hsyyid.mastereconomy.config.ConfigManager;
 
 public class PlayerJoinListener
@@ -15,7 +16,7 @@ public class PlayerJoinListener
 		{
 			Player player = event.getTargetUser().getPlayer().get();
 			
-			if(!ConfigManager.doesPlayerHaveAccount(player.getUniqueId()))
+			if(!ConfigManager.doesPlayerHaveAccount(player.getUniqueId(), MasterEconomy.getMasterEconomy().getCurrency()))
 			{
 				ConfigManager.addUserAccount(player.getUniqueId());
 			}

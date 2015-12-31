@@ -41,27 +41,29 @@ public class MasterEconomyService implements EconomyService
 	@Override
 	public Optional<UniqueAccount> getAccount(UUID uuid)
 	{
-		
+		return ConfigManager.getUserAccount(uuid);
 	}
 
 	@Override
 	public Optional<UniqueAccount> createAccount(UUID uuid)
 	{
-		return Optional.of(ConfigManager.addUserAccount(uuid));
+		if (!ConfigManager.doesPlayerHaveAccount(uuid, MasterEconomy.getMasterEconomy().getCurrency()))
+			return Optional.of(ConfigManager.addUserAccount(uuid));
+		else
+			return ConfigManager.getUserAccount(uuid);
+
 	}
 
 	@Override
 	public Optional<Account> getAccount(String identifier)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return ConfigManager.getAccount(identifier);
 	}
 
 	@Override
 	public Optional<VirtualAccount> createVirtualAccount(String identifier)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return Optional.of(ConfigManager.addAccount(identifier));
 	}
 
 }
