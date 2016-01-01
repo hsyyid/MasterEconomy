@@ -10,8 +10,7 @@ import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
 import org.spongepowered.api.service.economy.account.VirtualAccount;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
-import org.spongepowered.api.util.TextMessageException;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 import io.github.hsyyid.mastereconomy.MasterEconomy;
 import io.github.hsyyid.mastereconomy.service.MasterEconomyUniqueAccount;
@@ -22,7 +21,6 @@ import ninja.leaping.configurate.loader.ConfigurationLoader;
 
 public class ConfigManager
 {
-	@SuppressWarnings("deprecation")
 	public static Text getCurrencyPluralDisplayName()
 	{
 		ConfigurationNode valueNode = MasterEconomy.config.getNode((Object[]) ("mastereconomy.currency.pluralname").split("\\."));
@@ -30,18 +28,11 @@ public class ConfigManager
 		if (valueNode.getValue() == null)
 		{
 			setCurrencyPluralDisplayName("Dollars");
-			return Texts.of("Dollars");
+			return Text.of("Dollars");
 		}
 		else
 		{
-			try
-			{
-				return Texts.legacy('&').from(valueNode.getString());
-			}
-			catch (TextMessageException e)
-			{
-				return Texts.of(valueNode.getString());
-			}
+			return TextSerializers.formattingCode('&').deserialize(valueNode.getString());
 		}
 	}
 
@@ -61,7 +52,6 @@ public class ConfigManager
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public static Text getCurrencyDisplayName()
 	{
 		ConfigurationNode valueNode = MasterEconomy.config.getNode((Object[]) ("mastereconomy.currency.name").split("\\."));
@@ -69,18 +59,11 @@ public class ConfigManager
 		if (valueNode.getValue() == null)
 		{
 			setCurrencyDisplayName("Dollar");
-			return Texts.of("Dollar");
+			return Text.of("Dollar");
 		}
 		else
 		{
-			try
-			{
-				return Texts.legacy('&').from(valueNode.getString());
-			}
-			catch (TextMessageException e)
-			{
-				return Texts.of(valueNode.getString());
-			}
+			return TextSerializers.formattingCode('&').deserialize(valueNode.getString());
 		}
 	}
 
@@ -100,7 +83,6 @@ public class ConfigManager
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public static Text getCurrencySymbol()
 	{
 		ConfigurationNode valueNode = MasterEconomy.config.getNode((Object[]) ("mastereconomy.currency.symbol").split("\\."));
@@ -108,18 +90,11 @@ public class ConfigManager
 		if (valueNode.getValue() == null)
 		{
 			setCurrencySymbol("$");
-			return Texts.of("$");
+			return Text.of("$");
 		}
 		else
 		{
-			try
-			{
-				return Texts.legacy('&').from(valueNode.getString());
-			}
-			catch (TextMessageException e)
-			{
-				return Texts.of(valueNode.getString());
-			}
+			return TextSerializers.formattingCode('&').deserialize(valueNode.getString());
 		}
 	}
 
@@ -158,14 +133,14 @@ public class ConfigManager
 
 		return uniqueAccount;
 	}
-	
+
 	public static UniqueAccount addUserAccount(UUID playerUuid, Text displayName)
 	{
 		ConfigurationLoader<CommentedConfigurationNode> configManager = MasterEconomy.getConfigManager();
 		MasterEconomy.config.getNode("mastereconomy", "accounts", "users", playerUuid.toString(), MasterEconomy.getMasterEconomy().getCurrency().getDisplayName().toText().toString(), "balance").setValue(0);
 		UniqueAccount uniqueAccount = new MasterEconomyUniqueAccount(playerUuid, displayName);
 		MasterEconomy.accounts.add(uniqueAccount);
-
+		MasterEconomy.getMasterEconomy().getLogger().info("User added");
 		try
 		{
 			configManager.save(MasterEconomy.config);
@@ -280,7 +255,7 @@ public class ConfigManager
 				balance = BigDecimal.valueOf(valueNode.getDouble());
 			}
 
-			return Texts.builder().append(currency.getSymbol()).append(Texts.of(" ", balance.toString())).build();
+			return Text.builder().append(currency.getSymbol()).append(Text.of(" ", balance.toString())).build();
 		}
 		else if (account instanceof VirtualAccount)
 		{
@@ -294,11 +269,11 @@ public class ConfigManager
 				balance = BigDecimal.valueOf(valueNode.getDouble());
 			}
 
-			return Texts.builder().append(currency.getSymbol()).append(Texts.of(" ", balance.toString())).build();
+			return Text.builder().append(currency.getSymbol()).append(Text.of(" ", balance.toString())).build();
 		}
 		else
 		{
-			return Texts.builder().append(currency.getSymbol()).append(Texts.of(" ", 0)).build();
+			return Text.builder().append(currency.getSymbol()).append(Text.of(" ", 0)).build();
 		}
 	}
 
@@ -456,11 +431,11 @@ public class ConfigManager
 			ConfigurationLoader<CommentedConfigurationNode> configManager = MasterEconomy.getConfigManager();
 			ConfigurationNode valueNode = MasterEconomy.config.getNode((Object[]) ("mastereconomy.accounts.users." + uniqueAccount.getUUID().toString()).split("\\."));
 
-			for(ConfigurationNode childNode : valueNode.getChildrenList())
+			for (ConfigurationNode childNode : valueNode.getChildrenList())
 			{
 				childNode.getChildrenList().get(0).setValue(value.doubleValue());
 			}
-			
+
 			try
 			{
 				configManager.save(MasterEconomy.config);
@@ -477,11 +452,11 @@ public class ConfigManager
 			ConfigurationLoader<CommentedConfigurationNode> configManager = MasterEconomy.getConfigManager();
 			ConfigurationNode valueNode = MasterEconomy.config.getNode((Object[]) ("mastereconomy.accounts.virtual." + virtualAccount.getIdentifier()).split("\\."));
 
-			for(ConfigurationNode childNode : valueNode.getChildrenList())
+			for (ConfigurationNode childNode : valueNode.getChildrenMap().values())
 			{
 				childNode.getChildrenList().get(0).setValue(value.doubleValue());
 			}
-			
+
 			try
 			{
 				configManager.save(MasterEconomy.config);
@@ -491,6 +466,29 @@ public class ConfigManager
 			{
 				System.out.println("An error occurred while saving the config.");
 			}
+		}
+	}
+
+	public static void readAccounts()
+	{
+		// Read VirtualAccounts
+		ConfigurationNode virtualAccountsNode = MasterEconomy.config.getNode((Object[]) ("mastereconomy.accounts.virtual").split("\\."));
+
+		for (Object key : virtualAccountsNode.getChildrenMap().keySet())
+		{
+			String identifier = key.toString();
+			VirtualAccount virtualAccount = new MasterEconomyVirtualAccount(identifier);
+			MasterEconomy.accounts.add(virtualAccount);
+		}
+
+		// Read UniqueAccounts
+		ConfigurationNode uniqueAccountsNode = MasterEconomy.config.getNode((Object[]) ("mastereconomy.accounts.users").split("\\."));
+
+		for (Object key : uniqueAccountsNode.getChildrenMap().keySet())
+		{
+			UUID uuid = UUID.fromString(key.toString());
+			UniqueAccount uniqueAccount = new MasterEconomyUniqueAccount(uuid);
+			MasterEconomy.accounts.add(uniqueAccount);
 		}
 	}
 }

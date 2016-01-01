@@ -1,9 +1,8 @@
 package io.github.hsyyid.mastereconomy.listeners;
 
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 
 import io.github.hsyyid.mastereconomy.MasterEconomy;
 import io.github.hsyyid.mastereconomy.config.ConfigManager;
@@ -11,16 +10,11 @@ import io.github.hsyyid.mastereconomy.config.ConfigManager;
 public class PlayerJoinListener
 {
 	@Listener
-	public void onPlayerJoin(ClientConnectionEvent.Login event)
-	{
-		if (event.getTargetUser().getPlayer().isPresent())
+	public void onPlayerJoin(ClientConnectionEvent.Join event)
+	{	
+		if (!ConfigManager.doesPlayerHaveAccount(event.getTargetEntity().getUniqueId(), MasterEconomy.getMasterEconomy().getCurrency()))
 		{
-			Player player = event.getTargetUser().getPlayer().get();
-			
-			if(!ConfigManager.doesPlayerHaveAccount(player.getUniqueId(), MasterEconomy.getMasterEconomy().getCurrency()))
-			{
-				ConfigManager.addUserAccount(player.getUniqueId(), Texts.of(player.getName()));
-			}
+			ConfigManager.addUserAccount(event.getTargetEntity().getUniqueId(), Text.of(event.getTargetEntity().getName()));
 		}
 	}
 }

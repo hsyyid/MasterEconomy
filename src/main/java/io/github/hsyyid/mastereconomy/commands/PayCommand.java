@@ -8,7 +8,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import io.github.hsyyid.mastereconomy.MasterEconomy;
@@ -28,19 +28,19 @@ public class PayCommand implements CommandExecutor
 
 			if (balance.compareTo(BigDecimal.valueOf(amount)) >= 0)
 			{
-				source.sendMessage(Texts.of(TextColors.AQUA, "[MasterEconomy]: ", TextColors.GREEN, "Sent ", BigDecimal.valueOf(amount).toString(), " to player ", TextColors.YELLOW, player.getName()));
-				player.sendMessage(Texts.of(TextColors.AQUA, "[MasterEconomy]: ", TextColors.GREEN, "Received ", BigDecimal.valueOf(amount).toString(), " from player ", TextColors.YELLOW, source.getName()));
+				source.sendMessage(Text.of(TextColors.AQUA, "[MasterEconomy]: ", TextColors.GREEN, "Sent ", BigDecimal.valueOf(amount).toString(), " ", MasterEconomy.getMasterEconomy().getCurrency().getPluralDisplayName(), " to player ", TextColors.YELLOW, player.getName()));
+				player.sendMessage(Text.of(TextColors.AQUA, "[MasterEconomy]: ", TextColors.GREEN, "Received ", BigDecimal.valueOf(amount).toString(), " ", MasterEconomy.getMasterEconomy().getCurrency().getPluralDisplayName(), " from player ", TextColors.YELLOW, source.getName()));
 				ConfigManager.addToBalance(ConfigManager.getUserAccount(player.getUniqueId()).get(), MasterEconomy.getMasterEconomy().getCurrency(), BigDecimal.valueOf(amount));
 				ConfigManager.subtractFromBalance(ConfigManager.getUserAccount(source.getUniqueId()).get(), MasterEconomy.getMasterEconomy().getCurrency(), BigDecimal.valueOf(amount));
 			}
 			else
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have enough money to complete this transaction."));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You do not have enough money to complete this transaction."));
 			}
 		}
 		else
 		{
-			src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be a player to send money."));
+			src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You must be a player to send money."));
 		}
 
 		return CommandResult.success();

@@ -5,7 +5,6 @@ import java.text.DecimalFormat;
 
 import org.spongepowered.api.service.economy.Currency;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
 
 import io.github.hsyyid.mastereconomy.config.ConfigManager;
 
@@ -32,7 +31,7 @@ public class MasterEconomyCurrency implements Currency
 	@Override
 	public Text format(BigDecimal amount)
 	{
-		return Texts.of(amount.toString());
+		return Text.of(amount.toString());
 	}
 
 	@Override
@@ -45,7 +44,7 @@ public class MasterEconomyCurrency implements Currency
 		df.setMinimumFractionDigits(0);
 		df.setGroupingUsed(false);
 
-		return Texts.of(df.format(amount));
+		return Text.of(df.format(amount));
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import io.github.hsyyid.mastereconomy.MasterEconomy;
@@ -23,8 +23,8 @@ public class BalanceCommand implements CommandExecutor
 		if (target.isPresent())
 		{
 			Player player = target.get();
-			src.sendMessage(Texts.builder()
-				.append(Texts.of(TextColors.GOLD, "Balance: ", TextColors.GRAY))
+			src.sendMessage(Text.builder()
+				.append(Text.of(TextColors.GOLD, "Balance: ", TextColors.GRAY))
 				.append(ConfigManager.getBalanceText(ConfigManager.getUserAccount(player.getUniqueId()).get(), MasterEconomy.getMasterEconomy().getCurrency()))
 				.build());
 		}
@@ -34,14 +34,14 @@ public class BalanceCommand implements CommandExecutor
 			{
 				Player player = (Player) src;
 
-				src.sendMessage(Texts.builder()
-					.append(Texts.of(TextColors.GOLD, "Balance: ", TextColors.GRAY))
+				src.sendMessage(Text.builder()
+					.append(Text.of(TextColors.GOLD, "Balance: ", TextColors.GRAY))
 					.append(ConfigManager.getBalanceText(ConfigManager.getUserAccount(player.getUniqueId()).get(), MasterEconomy.getMasterEconomy().getCurrency()))
 					.build());
 			}
 			else
 			{
-				src.sendMessage(Texts.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You musaia"));
+				src.sendMessage(Text.of(TextColors.DARK_RED, "Error! ", TextColors.RED, "You musaia"));
 			}
 		}
 

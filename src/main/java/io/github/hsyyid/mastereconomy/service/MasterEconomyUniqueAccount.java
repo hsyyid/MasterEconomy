@@ -16,7 +16,6 @@ import org.spongepowered.api.service.economy.transaction.TransactionType;
 import org.spongepowered.api.service.economy.transaction.TransactionTypes;
 import org.spongepowered.api.service.economy.transaction.TransferResult;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
 
 import io.github.hsyyid.mastereconomy.MasterEconomy;
 import io.github.hsyyid.mastereconomy.config.ConfigManager;
@@ -29,7 +28,7 @@ public class MasterEconomyUniqueAccount implements UniqueAccount
 	public MasterEconomyUniqueAccount(UUID uuid)
 	{
 		this.uuid = uuid;
-		this.displayName = Texts.of(uuid.toString());
+		this.displayName = Text.of(uuid.toString());
 	}
 
 	public MasterEconomyUniqueAccount(UUID uuid, Text displayName)

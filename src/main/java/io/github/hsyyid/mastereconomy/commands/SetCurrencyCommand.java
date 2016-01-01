@@ -5,7 +5,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
-import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import io.github.hsyyid.mastereconomy.MasterEconomy;
@@ -25,7 +25,7 @@ public class SetCurrencyCommand implements CommandExecutor
 		ConfigManager.setCurrencySymbol(currencySymbol);
 		MasterEconomy.getMasterEconomy().setCurrency(new MasterEconomyCurrency());
 		
-		src.sendMessage(Texts.of(TextColors.AQUA, "[MasterEconomy]: ", TextColors.GREEN, "Set currency name and symbol."));
+		src.sendMessage(Text.of(TextColors.AQUA, "[MasterEconomy]: ", TextColors.GREEN, "Set currency name and symbol."));
 		return CommandResult.success();
 	}
 }

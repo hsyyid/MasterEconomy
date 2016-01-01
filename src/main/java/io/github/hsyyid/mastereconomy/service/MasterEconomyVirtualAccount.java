@@ -15,7 +15,6 @@ import org.spongepowered.api.service.economy.transaction.TransactionType;
 import org.spongepowered.api.service.economy.transaction.TransactionTypes;
 import org.spongepowered.api.service.economy.transaction.TransferResult;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
 
 import io.github.hsyyid.mastereconomy.MasterEconomy;
 import io.github.hsyyid.mastereconomy.config.ConfigManager;
@@ -28,7 +27,7 @@ public class MasterEconomyVirtualAccount implements VirtualAccount
 	public MasterEconomyVirtualAccount(String identifier)
 	{
 		this.identifier = identifier;
-		this.displayName = Texts.of(identifier);
+		this.displayName = Text.of(identifier);
 	}
 	
 	public MasterEconomyVirtualAccount(String identifier, Text displayName)
