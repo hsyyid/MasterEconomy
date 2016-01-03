@@ -473,52 +473,7 @@ public class ConfigManager
 	public static Map<Currency, BigDecimal> getBalances(Account account)
 	{
 		HashMap<Currency, BigDecimal> balances = new HashMap<>();
-		
-		if (account instanceof UniqueAccount)
-		{
-			UniqueAccount uniqueAccount = (UniqueAccount) account;
-			ConfigurationLoader<CommentedConfigurationNode> configManager = MasterEconomy.getConfigManager();
-			ConfigurationNode valueNode = MasterEconomy.config.getNode((Object[]) ("mastereconomy.accounts.users." + uniqueAccount.getUUID().toString()).split("\\."));
-
-			for (ConfigurationNode childNode : valueNode.getChildrenMap().values())
-			{
-				BigDecimal amount = BigDecimal.valueOf(childNode.getChildrenList().get(0).getDouble());
-				//balances.put(currency, amount);
-			}
-
-			try
-			{
-				configManager.save(MasterEconomy.config);
-				configManager.load();
-			}
-			catch (IOException e)
-			{
-				System.out.println("An error occurred while saving the config.");
-			}
-		}
-		else if (account instanceof VirtualAccount)
-		{
-			VirtualAccount virtualAccount = (VirtualAccount) account;
-			ConfigurationLoader<CommentedConfigurationNode> configManager = MasterEconomy.getConfigManager();
-			ConfigurationNode valueNode = MasterEconomy.config.getNode((Object[]) ("mastereconomy.accounts.virtual." + virtualAccount.getIdentifier()).split("\\."));
-
-			for (ConfigurationNode childNode : valueNode.getChildrenMap().values())
-			{
-				BigDecimal amount = BigDecimal.valueOf(childNode.getChildrenList().get(0).getDouble());
-				//balances.put(currency, amount);
-			}
-
-			try
-			{
-				configManager.save(MasterEconomy.config);
-				configManager.load();
-			}
-			catch (IOException e)
-			{
-				System.out.println("An error occurred while saving the config.");
-			}
-		}
-		
+		balances.put(MasterEconomy.getMasterEconomy().getCurrency(), ConfigManager.getBalance(account, MasterEconomy.getMasterEconomy().getCurrency()));	
 		return balances;
 	}
 
