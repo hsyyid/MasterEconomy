@@ -1,10 +1,9 @@
 package io.github.hsyyid.mastereconomy.service;
 
-import java.math.BigDecimal;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
+import io.github.hsyyid.mastereconomy.MasterEconomy;
+import io.github.hsyyid.mastereconomy.config.ConfigManager;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.service.context.Context;
 import org.spongepowered.api.service.economy.Currency;
@@ -17,8 +16,10 @@ import org.spongepowered.api.service.economy.transaction.TransactionTypes;
 import org.spongepowered.api.service.economy.transaction.TransferResult;
 import org.spongepowered.api.text.Text;
 
-import io.github.hsyyid.mastereconomy.MasterEconomy;
-import io.github.hsyyid.mastereconomy.config.ConfigManager;
+import java.math.BigDecimal;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 public class MasterEconomyUniqueAccount implements UniqueAccount
 {
@@ -64,8 +65,7 @@ public class MasterEconomyUniqueAccount implements UniqueAccount
 	@Override
 	public Map<Currency, BigDecimal> getBalances(Set<Context> contexts)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return ConfigManager.getBalances(this);
 	}
 
 	@Override
@@ -73,28 +73,36 @@ public class MasterEconomyUniqueAccount implements UniqueAccount
 	{
 		TransactionType transactionType = ConfigManager.getBalance(this, currency).compareTo(amount) >= 0 ? TransactionTypes.DEPOSIT : TransactionTypes.WITHDRAW;
 		ConfigManager.setBalance(this, currency, amount);
-		return new MasterEconomyTransactionResult(this, MasterEconomy.getMasterEconomy().getCurrency(), amount, ResultType.SUCCESS, transactionType);
+		TransactionResult transactionResult = new MasterEconomyTransactionResult(this, MasterEconomy.getMasterEconomy().getCurrency(), amount, ResultType.SUCCESS, transactionType);
+		SpongeEventFactory.createEconomyTransactionEvent(Cause.of(Sponge.getPluginManager().getPlugin("MasterEconomy")), transactionResult);
+		return transactionResult;
 	}
 
 	@Override
 	public TransactionResult resetBalances(Cause cause, Set<Context> contexts)
 	{
 		ConfigManager.resetBalances(this, BigDecimal.valueOf(0));
-		return new MasterEconomyTransactionResult(this, MasterEconomy.getMasterEconomy().getCurrency(), BigDecimal.valueOf(0), ResultType.SUCCESS, TransactionTypes.WITHDRAW);
+		TransactionResult transactionResult = new MasterEconomyTransactionResult(this, MasterEconomy.getMasterEconomy().getCurrency(), BigDecimal.valueOf(0), ResultType.SUCCESS, TransactionTypes.WITHDRAW);
+		SpongeEventFactory.createEconomyTransactionEvent(Cause.of(Sponge.getPluginManager().getPlugin("MasterEconomy")), transactionResult);
+		return transactionResult;
 	}
 
 	@Override
 	public TransactionResult resetBalance(Currency currency, Cause cause, Set<Context> contexts)
 	{
 		ConfigManager.setBalance(this, currency, BigDecimal.valueOf(0));
-		return new MasterEconomyTransactionResult(this, currency, BigDecimal.valueOf(0), ResultType.SUCCESS, TransactionTypes.WITHDRAW);
+		TransactionResult transactionResult =  new MasterEconomyTransactionResult(this, currency, BigDecimal.valueOf(0), ResultType.SUCCESS, TransactionTypes.WITHDRAW);
+		SpongeEventFactory.createEconomyTransactionEvent(Cause.of(Sponge.getPluginManager().getPlugin("MasterEconomy")), transactionResult);
+		return transactionResult;
 	}
 
 	@Override
 	public TransactionResult deposit(Currency currency, BigDecimal amount, Cause cause, Set<Context> contexts)
 	{
 		ConfigManager.addToBalance(this, currency, amount);
-		return new MasterEconomyTransactionResult(this, currency, amount, ResultType.SUCCESS, TransactionTypes.DEPOSIT);
+		TransactionResult transactionResult = new MasterEconomyTransactionResult(this, currency, amount, ResultType.SUCCESS, TransactionTypes.DEPOSIT);
+		SpongeEventFactory.createEconomyTransactionEvent(Cause.of(Sponge.getPluginManager().getPlugin("MasterEconomy")), transactionResult);
+		return transactionResult;
 	}
 
 	@Override
@@ -103,11 +111,15 @@ public class MasterEconomyUniqueAccount implements UniqueAccount
 		if (ConfigManager.getBalance(this, currency).compareTo(amount) >= 0)
 		{
 			ConfigManager.subtractFromBalance(this, currency, amount);
-			return new MasterEconomyTransactionResult(this, currency, amount, ResultType.SUCCESS, TransactionTypes.WITHDRAW);
+			TransactionResult transactionResult = new MasterEconomyTransactionResult(this, currency, amount, ResultType.SUCCESS, TransactionTypes.WITHDRAW);
+			SpongeEventFactory.createEconomyTransactionEvent(Cause.of(Sponge.getPluginManager().getPlugin("MasterEconomy")), transactionResult);
+			return transactionResult;
 		}
 		else
 		{
-			return new MasterEconomyTransactionResult(this, currency, amount, ResultType.ACCOUNT_NO_FUNDS, TransactionTypes.WITHDRAW);
+			TransactionResult transactionResult =  new MasterEconomyTransactionResult(this, currency, amount, ResultType.ACCOUNT_NO_FUNDS, TransactionTypes.WITHDRAW);
+			SpongeEventFactory.createEconomyTransactionEvent(Cause.of(Sponge.getPluginManager().getPlugin("MasterEconomy")), transactionResult);
+			return transactionResult;
 		}
 	}
 
@@ -118,11 +130,15 @@ public class MasterEconomyUniqueAccount implements UniqueAccount
 		{
 			to.deposit(currency, amount, cause);
 			ConfigManager.subtractFromBalance(this, currency, amount);
-			return new MasterEconomyTransferResult(this, currency, amount, ResultType.SUCCESS, TransactionTypes.TRANSFER, to);
+			TransferResult transactionResult = new MasterEconomyTransferResult(this, currency, amount, ResultType.SUCCESS, TransactionTypes.TRANSFER, to);
+			SpongeEventFactory.createEconomyTransactionEvent(Cause.of(Sponge.getPluginManager().getPlugin("MasterEconomy")), transactionResult);
+			return transactionResult;
 		}
 		else
 		{
-			return new MasterEconomyTransferResult(this, currency, amount, ResultType.ACCOUNT_NO_FUNDS, TransactionTypes.TRANSFER, to);
+			TransferResult transactionResult = new MasterEconomyTransferResult(this, currency, amount, ResultType.ACCOUNT_NO_FUNDS, TransactionTypes.TRANSFER, to);
+			SpongeEventFactory.createEconomyTransactionEvent(Cause.of(Sponge.getPluginManager().getPlugin("MasterEconomy")), transactionResult);
+			return transactionResult;
 		}
 
 	}

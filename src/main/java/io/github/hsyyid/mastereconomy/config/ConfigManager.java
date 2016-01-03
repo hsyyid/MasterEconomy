@@ -1,10 +1,11 @@
 package io.github.hsyyid.mastereconomy.config;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.Optional;
-import java.util.UUID;
-
+import io.github.hsyyid.mastereconomy.MasterEconomy;
+import io.github.hsyyid.mastereconomy.service.MasterEconomyUniqueAccount;
+import io.github.hsyyid.mastereconomy.service.MasterEconomyVirtualAccount;
+import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.spongepowered.api.service.economy.Currency;
 import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
@@ -12,12 +13,12 @@ import org.spongepowered.api.service.economy.account.VirtualAccount;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
-import io.github.hsyyid.mastereconomy.MasterEconomy;
-import io.github.hsyyid.mastereconomy.service.MasterEconomyUniqueAccount;
-import io.github.hsyyid.mastereconomy.service.MasterEconomyVirtualAccount;
-import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.commented.CommentedConfigurationNode;
-import ninja.leaping.configurate.loader.ConfigurationLoader;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class ConfigManager
 {
@@ -431,7 +432,7 @@ public class ConfigManager
 			ConfigurationLoader<CommentedConfigurationNode> configManager = MasterEconomy.getConfigManager();
 			ConfigurationNode valueNode = MasterEconomy.config.getNode((Object[]) ("mastereconomy.accounts.users." + uniqueAccount.getUUID().toString()).split("\\."));
 
-			for (ConfigurationNode childNode : valueNode.getChildrenList())
+			for (ConfigurationNode childNode : valueNode.getChildrenMap().values())
 			{
 				childNode.getChildrenList().get(0).setValue(value.doubleValue());
 			}
@@ -467,6 +468,58 @@ public class ConfigManager
 				System.out.println("An error occurred while saving the config.");
 			}
 		}
+	}
+	
+	public static Map<Currency, BigDecimal> getBalances(Account account)
+	{
+		HashMap<Currency, BigDecimal> balances = new HashMap<>();
+		
+		if (account instanceof UniqueAccount)
+		{
+			UniqueAccount uniqueAccount = (UniqueAccount) account;
+			ConfigurationLoader<CommentedConfigurationNode> configManager = MasterEconomy.getConfigManager();
+			ConfigurationNode valueNode = MasterEconomy.config.getNode((Object[]) ("mastereconomy.accounts.users." + uniqueAccount.getUUID().toString()).split("\\."));
+
+			for (ConfigurationNode childNode : valueNode.getChildrenMap().values())
+			{
+				BigDecimal amount = BigDecimal.valueOf(childNode.getChildrenList().get(0).getDouble());
+				//balances.put(currency, amount);
+			}
+
+			try
+			{
+				configManager.save(MasterEconomy.config);
+				configManager.load();
+			}
+			catch (IOException e)
+			{
+				System.out.println("An error occurred while saving the config.");
+			}
+		}
+		else if (account instanceof VirtualAccount)
+		{
+			VirtualAccount virtualAccount = (VirtualAccount) account;
+			ConfigurationLoader<CommentedConfigurationNode> configManager = MasterEconomy.getConfigManager();
+			ConfigurationNode valueNode = MasterEconomy.config.getNode((Object[]) ("mastereconomy.accounts.virtual." + virtualAccount.getIdentifier()).split("\\."));
+
+			for (ConfigurationNode childNode : valueNode.getChildrenMap().values())
+			{
+				BigDecimal amount = BigDecimal.valueOf(childNode.getChildrenList().get(0).getDouble());
+				//balances.put(currency, amount);
+			}
+
+			try
+			{
+				configManager.save(MasterEconomy.config);
+				configManager.load();
+			}
+			catch (IOException e)
+			{
+				System.out.println("An error occurred while saving the config.");
+			}
+		}
+		
+		return balances;
 	}
 
 	public static void readAccounts()
