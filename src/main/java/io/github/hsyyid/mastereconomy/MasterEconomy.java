@@ -1,28 +1,7 @@
 package io.github.hsyyid.mastereconomy;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.spec.CommandSpec;
-import org.spongepowered.api.config.DefaultConfig;
-import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.game.state.GameInitializationEvent;
-import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.service.economy.Currency;
-import org.spongepowered.api.service.economy.EconomyService;
-import org.spongepowered.api.service.economy.account.Account;
-import org.spongepowered.api.text.Text;
-
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
-
 import io.github.hsyyid.mastereconomy.commands.AdminPayCommand;
 import io.github.hsyyid.mastereconomy.commands.BalanceCommand;
 import io.github.hsyyid.mastereconomy.commands.MasterEconomyCommand;
@@ -35,6 +14,26 @@ import io.github.hsyyid.mastereconomy.service.MasterEconomyService;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import org.slf4j.Logger;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.config.DefaultConfig;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
+import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.service.economy.Currency;
+import org.spongepowered.api.service.economy.EconomyService;
+import org.spongepowered.api.service.economy.account.Account;
+import org.spongepowered.api.text.Text;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 @Plugin(id = "MasterEconomy", name = "MasterEconomy", version = "0.1")
 public class MasterEconomy
@@ -80,6 +79,12 @@ public class MasterEconomy
 	private ConfigurationLoader<CommentedConfigurationNode> confManager;
 
 	@Listener
+	public void onGamePreInit(GamePreInitializationEvent event)
+	{
+		Sponge.getGame().getServiceManager().setProvider(Sponge.getPluginManager().getPlugin("MasterEconomy").get().getInstance().get(), EconomyService.class, new MasterEconomyService());
+	}
+	
+	@Listener
 	public void onGameInit(GameInitializationEvent event)
 	{
 		getLogger().info("MasterEconomy loading...");
@@ -101,8 +106,6 @@ public class MasterEconomy
 		{
 			getLogger().error("The default configuration could not be loaded or created!");
 		}
-
-			Sponge.getGame().getServiceManager().setProvider(Sponge.getPluginManager().getPlugin("MasterEconomy").get().getInstance().get(), EconomyService.class, new MasterEconomyService());
 		
 		if(this.currency == null)
 		{
